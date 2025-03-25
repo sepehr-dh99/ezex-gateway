@@ -1,0 +1,4 @@
+type ErrorPayload {
+  errorCode: Int!
+  message: String
+}
