@@ -35,7 +35,7 @@ func main() {
 
 	a := auth.New()
 
-	gql := graphql.New(cfg.GraphqlServer, a, mdl.Recover())
+	gql := graphql.New(cfg.GraphqlServer, logging, a, mdl.Recover())
 
 	gql.Start()
 	logging.Info("graphql server started")
