@@ -2,19 +2,12 @@ package auth
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"log/slog"
 
 	"github.com/ezex-io/ezex-gateway/api/graphql/gen"
 	"github.com/ezex-io/ezex-gateway/internal/port"
 	"github.com/ezex-io/ezex-gateway/internal/utils"
-)
-
-var (
-	ErrConfirmationCodeAlreadySent = errors.New("confirmation code already sent")
-	ErrConfirmationCodeExpired     = errors.New("confirmation code has expired")
-	ErrConfirmationCodeIsInvalid   = errors.New("confirmation code is invalid")
+	"github.com/ezex-io/gopkg/logger"
 )
 
 type Auth struct {
@@ -22,10 +15,10 @@ type Auth struct {
 	redisPort        port.RedisPort
 
 	cfg     *Config
-	logging *slog.Logger
+	logging logger.Logger
 }
 
-func NewAuth(cfg *Config, logging *slog.Logger,
+func NewAuth(cfg *Config, logging logger.Logger,
 	notificationPort port.NotificationPort, redisPort port.RedisPort,
 ) *Auth {
 	return &Auth{
