@@ -7,7 +7,7 @@ type Config struct {
 
 var DefaultConfig = &Config{
 	Address: "0.0.0.0",
-	Port:    9000,
+	Port:    50051,
 }
 
 func (*Config) BasicCheck() error {

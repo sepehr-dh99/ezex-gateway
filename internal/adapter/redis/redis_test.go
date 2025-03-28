@@ -61,7 +61,7 @@ func TestRedis_SetGetDel(t *testing.T) {
 	r := setupRedis(t)
 
 	t.Cleanup(func() {
-		_ = r.Shutdown()
+		_ = r.Close()
 	})
 
 	key := "test:set"
@@ -86,7 +86,7 @@ func TestRedis_Exists(t *testing.T) {
 	r := setupRedis(t)
 
 	t.Cleanup(func() {
-		_ = r.Shutdown()
+		_ = r.Close()
 	})
 
 	key := "test:exists"
@@ -108,7 +108,7 @@ func TestRedis_SetGetJSON(t *testing.T) {
 	r := setupRedis(t)
 
 	t.Cleanup(func() {
-		_ = r.Shutdown()
+		_ = r.Close()
 	})
 
 	key := "test:json"

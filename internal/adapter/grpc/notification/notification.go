@@ -11,19 +11,25 @@ import (
 )
 
 type Adapter struct {
+	conn               *grpc.ClientConn
 	notificationClient proto.NotificationServiceClient
 }
 
 func New(cfg *Config) (port.NotificationPort, error) {
-	con, err := grpc.NewClient(fmt.Sprintf("%s:%d", cfg.Address, cfg.Port),
+	conn, err := grpc.NewClient(fmt.Sprintf("%s:%d", cfg.Address, cfg.Port),
 		grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		return nil, err
 	}
 
 	return &Adapter{
-		notificationClient: proto.NewNotificationServiceClient(con),
+		conn:               conn,
+		notificationClient: proto.NewNotificationServiceClient(conn),
 	}, nil
+}
+
+func (a *Adapter) Close() error {
+	return a.conn.Close()
 }
 
 func (a *Adapter) SendEmail(ctx context.Context, recipient, subject, template string, fields map[string]string) error {

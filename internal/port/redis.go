@@ -13,5 +13,5 @@ type RedisPort interface {
 	SetJSON(ctx context.Context, key string, val any, ttl time.Duration) error
 	GetJSON(ctx context.Context, key string, out any) error
 
-	Shutdown() error
+	Close() error
 }

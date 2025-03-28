@@ -11,6 +11,12 @@ import (
 	"github.com/ezex-io/ezex-gateway/internal/utils"
 )
 
+var (
+	ErrConfirmationCodeAlreadySent = errors.New("confirmation code already sent")
+	ErrConfirmationCodeExpired     = errors.New("confirmation code has expired")
+	ErrConfirmationCodeIsInvalid   = errors.New("confirmation code is invalid")
+)
+
 type Auth struct {
 	notificationPort port.NotificationPort
 	redisPort        port.RedisPort
@@ -33,7 +39,7 @@ func NewAuth(cfg *Config, logging *slog.Logger,
 func (a *Auth) SendConfirmationCode(ctx context.Context, recipient string, method gen.DeliveryMethod) error {
 	ok, err := a.redisPort.Exists(ctx, recipient)
 	if ok && err == nil {
-		return errors.New("email confirmation code already sent")
+		return ErrConfirmationCodeAlreadySent
 	}
 
 	code := utils.GenerateRandomCode(6)
@@ -59,11 +65,11 @@ func (a *Auth) SendConfirmationCode(ctx context.Context, recipient string, metho
 func (a *Auth) VerifyConfirmationCode(ctx context.Context, recipient, code string) error {
 	v, err := a.redisPort.Get(ctx, recipient)
 	if err != nil {
-		return errors.New("failed to verify confirmation code")
+		return ErrConfirmationCodeExpired
 	}
 
 	if v != code {
-		return errors.New("confirmation code is invalid")
+		return ErrConfirmationCodeIsInvalid
 	}
 
 	go func() {

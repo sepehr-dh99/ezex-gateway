@@ -29,10 +29,14 @@ func New(cfg *Config) (port.RedisPort, error) {
 		Protocol:     cfg.Protocol,
 	})
 
+	if err := rdb.Ping(context.Background()).Err(); err != nil {
+		return nil, err
+	}
+
 	return &Adapter{rdb: rdb}, nil
 }
 
-func (a *Adapter) Shutdown() error {
+func (a *Adapter) Close() error {
 	return a.rdb.Close()
 }
 

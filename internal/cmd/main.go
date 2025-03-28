@@ -63,6 +63,9 @@ func main() {
 	select {
 	case <-interrupt:
 		_ = gql.Stop(context.Background())
+		_ = redisPort.Close()
+		_ = notificationPort.Close()
+
 		logging.Warn("service interrupted")
 	case err := <-gql.Notify():
 		logging.Error("graphql server got error", "err", err)
