@@ -13,7 +13,6 @@ FROM alpine:latest
 
 RUN mkdir /etc/gateway
 COPY --from=builder /app/build/ezex-gateway /usr/bin/ezex-gateway
-COPY --from=builder /app/docs/config.example.yml /etc/gateway/config.yml
 
 EXPOSE 8080
 
