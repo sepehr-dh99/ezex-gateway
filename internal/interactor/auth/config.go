@@ -14,6 +14,6 @@ var DefaultConfig = &Config{
 	ConfirmationCodeSubject:  "ezeX confirmation code",
 }
 
-func (c *Config) BasicCheck() error {
+func (*Config) BasicCheck() error {
 	return nil
 }

@@ -28,6 +28,10 @@ race_test:
 	@echo "Running race condition tests..."
 	@go test ./... -v -race
 
+integration_test:
+	@echo "Running integration tests..."
+	@go test -tags=integration ./... -v
+
 build_linux:
 	@echo "Building for Linux..."
 	@mkdir -p $(BUILD_DIR)

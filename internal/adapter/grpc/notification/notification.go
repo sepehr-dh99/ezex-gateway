@@ -2,6 +2,7 @@ package notification
 
 import (
 	"fmt"
+
 	"github.com/ezex-io/ezex-gateway/internal/port"
 	"github.com/ezex-io/ezex-notification/api/grpc/proto"
 	"golang.org/x/net/context"
@@ -32,7 +33,6 @@ func (a *Adapter) SendEmail(ctx context.Context, recipient, subject, template st
 		TemplateName:   template,
 		TemplateFields: fields,
 	})
-
 	if err != nil {
 		return err
 	}

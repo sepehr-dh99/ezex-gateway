@@ -10,6 +10,6 @@ var DefaultConfig = &Config{
 	Port:    9000,
 }
 
-func (c *Config) BasicCheck() error {
+func (*Config) BasicCheck() error {
 	return nil
 }

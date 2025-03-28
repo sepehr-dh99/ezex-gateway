@@ -28,6 +28,6 @@ var DefaultConfig = &Config{
 	},
 }
 
-func (c *Config) BasicCheck() error {
+func (*Config) BasicCheck() error {
 	return nil
 }

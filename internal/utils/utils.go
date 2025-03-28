@@ -14,6 +14,7 @@ func GenerateRandomCode(length uint8) string {
 		if err != nil {
 			// fallback to zero if crypto/rand fails (very rare)
 			code[i] = '0'
+
 			continue
 		}
 		code[i] = digits[num.Int64()]

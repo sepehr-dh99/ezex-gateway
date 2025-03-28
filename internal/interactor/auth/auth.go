@@ -4,10 +4,11 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log/slog"
+
 	"github.com/ezex-io/ezex-gateway/api/graphql/gen"
 	"github.com/ezex-io/ezex-gateway/internal/port"
 	"github.com/ezex-io/ezex-gateway/internal/utils"
-	"log/slog"
 )
 
 type Auth struct {
@@ -19,7 +20,8 @@ type Auth struct {
 }
 
 func NewAuth(cfg *Config, logging *slog.Logger,
-	notificationPort port.NotificationPort, redisPort port.RedisPort) *Auth {
+	notificationPort port.NotificationPort, redisPort port.RedisPort,
+) *Auth {
 	return &Auth{
 		notificationPort: notificationPort,
 		redisPort:        redisPort,
@@ -66,7 +68,7 @@ func (a *Auth) VerifyConfirmationCode(ctx context.Context, recipient, code strin
 
 	go func() {
 		if err := a.redisPort.Del(ctx, recipient); err != nil {
-			a.logging.Error("failed to delete recipient confirmation code",
+			a.logging.Error("failed to delete recipient confirmation code from redis",
 				"recipient", recipient, "err", err)
 		}
 	}()

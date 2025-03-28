@@ -26,6 +26,6 @@ var DefaultConfig = &Config{
 	Protocol:     3,
 }
 
-func (c *Config) BasicCheck() error {
+func (*Config) BasicCheck() error {
 	return nil
 }

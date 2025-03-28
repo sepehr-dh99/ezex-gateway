@@ -1,9 +1,10 @@
 package utils
 
 import (
-	"github.com/stretchr/testify/assert"
 	"testing"
 	"unicode"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestGenerateRandomCode(t *testing.T) {
@@ -31,5 +32,4 @@ func TestGenerateRandomCode(t *testing.T) {
 		// It's possible but very rare for them to match
 		assert.NotEqual(t, code1, code2, "codes should be different (usually)")
 	})
-
 }

@@ -1,12 +1,12 @@
 package config
 
 import (
+	"os"
+
 	"github.com/ezex-io/ezex-gateway/api/graphql"
 	"github.com/ezex-io/ezex-gateway/internal/adapter/grpc/notification"
 	"github.com/ezex-io/ezex-gateway/internal/adapter/redis"
 	"github.com/ezex-io/ezex-gateway/internal/interactor/auth"
-	"os"
-
 	"gopkg.in/yaml.v3"
 )
 
@@ -51,9 +51,5 @@ func (c *Config) BasicCheck() error {
 		return err
 	}
 
-	if err := c.RedisAdapterConfig.BasicCheck(); err != nil {
-		return err
-	}
-
-	return nil
+	return c.RedisAdapterConfig.BasicCheck()
 }

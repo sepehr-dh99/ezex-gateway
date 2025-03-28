@@ -11,9 +11,7 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
-var (
-	ErrNotFound = errors.New("key not found")
-)
+var ErrNotFound = errors.New("key not found")
 
 type Adapter struct {
 	rdb *redis.Client
@@ -47,6 +45,7 @@ func (a *Adapter) Get(ctx context.Context, key string) (string, error) {
 	if errors.Is(err, redis.Nil) {
 		return "", ErrNotFound
 	}
+
 	return val, err
 }
 
@@ -56,6 +55,7 @@ func (a *Adapter) Del(ctx context.Context, keys ...string) error {
 
 func (a *Adapter) Exists(ctx context.Context, key string) (bool, error) {
 	n, err := a.rdb.Exists(ctx, key).Result()
+
 	return n > 0, err
 }
 
@@ -64,6 +64,7 @@ func (a *Adapter) SetJSON(ctx context.Context, key string, val any, ttl time.Dur
 	if err != nil {
 		return fmt.Errorf("json marshal failed: %w", err)
 	}
+
 	return a.rdb.Set(ctx, key, data, ttl).Err()
 }
 
@@ -78,5 +79,6 @@ func (a *Adapter) GetJSON(ctx context.Context, key string, out any) error {
 	if err := json.Unmarshal(data, out); err != nil {
 		return fmt.Errorf("json unmarshal failed: %w", err)
 	}
+
 	return nil
 }

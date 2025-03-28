@@ -3,8 +3,6 @@ package main
 import (
 	"context"
 	"flag"
-	"github.com/ezex-io/ezex-gateway/internal/adapter/redis"
-	"github.com/ezex-io/ezex-gateway/internal/interactor/auth"
 	"log/slog"
 	"os"
 	"os/signal"
@@ -13,7 +11,9 @@ import (
 	"github.com/ezex-io/ezex-gateway/api/graphql"
 	"github.com/ezex-io/ezex-gateway/api/graphql/resolver"
 	"github.com/ezex-io/ezex-gateway/internal/adapter/grpc/notification"
+	"github.com/ezex-io/ezex-gateway/internal/adapter/redis"
 	"github.com/ezex-io/ezex-gateway/internal/config"
+	"github.com/ezex-io/ezex-gateway/internal/interactor/auth"
 	mdl "github.com/ezex-io/gopkg/middleware/http-mdl"
 )
 
