@@ -1,13 +1,6 @@
-package config
+package graphql
 
 type Config struct {
-	Domain        string       `yaml:"domain"`
-	Debug         bool         `yaml:"debug"`
-	GraphqlServer *GraphServer `yaml:"graphql_server"`
-	GRPCClients   []GRPCClient `yaml:"grpc_clients"`
-}
-
-type GraphServer struct {
 	Address    string `yaml:"address"`
 	Port       int    `yaml:"port"`
 	Playground bool   `yaml:"playground"`
@@ -22,7 +15,19 @@ type Cors struct {
 	AllowCredentials bool     `yaml:"allow_credentials"`
 }
 
-type GRPCClient struct {
-	Service Service `yaml:"service"`
-	Address string  `yaml:"address"`
+var DefaultConfig = &Config{
+	Address:    "0.0.0.0",
+	Port:       8080,
+	Playground: true,
+	QueryPath:  "",
+	CORS: Cors{
+		AllowedOrigins:   []string{"*"},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "PATCH", "DELETE"},
+		AllowedHeaders:   []string{"*"},
+		AllowCredentials: true,
+	},
+}
+
+func (c *Config) BasicCheck() error {
+	return nil
 }

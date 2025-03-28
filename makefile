@@ -1,6 +1,6 @@
 BINARY_NAME = ezex-gateway
 BUILD_DIR = build
-CMD_DIR = cmd/server/main.go
+CMD_DIR = internal/cmd/main.go
 
 .PHONY: all fmt lint vet test unit_test race_test build_linux check clean gen-graphql
 

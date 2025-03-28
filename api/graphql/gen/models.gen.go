@@ -8,11 +8,6 @@ import (
 	"strconv"
 )
 
-type ErrorPayload struct {
-	ErrorCode int32   `json:"errorCode"`
-	Message   *string `json:"message,omitempty"`
-}
-
 type Mutation struct {
 }
 
@@ -27,6 +22,10 @@ type SendConfirmationCodeInput struct {
 type VerifyConfirmationCodeInput struct {
 	Recipient string `json:"recipient"`
 	Code      string `json:"code"`
+}
+
+type VoidPayload struct {
+	Ok *bool `json:"ok,omitempty"`
 }
 
 type DeliveryMethod string

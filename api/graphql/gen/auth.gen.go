@@ -17,8 +17,8 @@ import (
 // region    ************************** generated!.gotpl **************************
 
 type MutationResolver interface {
-	SendConfirmationCode(ctx context.Context, input SendConfirmationCodeInput) (*ErrorPayload, error)
-	VerifyConfirmationCode(ctx context.Context, input VerifyConfirmationCodeInput) (*ErrorPayload, error)
+	SendConfirmationCode(ctx context.Context, input SendConfirmationCodeInput) (*VoidPayload, error)
+	VerifyConfirmationCode(ctx context.Context, input VerifyConfirmationCodeInput) (*VoidPayload, error)
 }
 type QueryResolver interface {
 	Dummy(ctx context.Context) (*string, error)
@@ -146,9 +146,9 @@ func (ec *executionContext) _Mutation_sendConfirmationCode(ctx context.Context, 
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*ErrorPayload)
+	res := resTmp.(*VoidPayload)
 	fc.Result = res
-	return ec.marshalNErrorPayload2ᚖgithubᚗcomᚋezexᚑioᚋezexᚑgatewayᚋapiᚋgraphqlᚋgenᚐErrorPayload(ctx, field.Selections, res)
+	return ec.marshalNVoidPayload2ᚖgithubᚗcomᚋezexᚑioᚋezexᚑgatewayᚋapiᚋgraphqlᚋgenᚐVoidPayload(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_sendConfirmationCode(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -159,12 +159,10 @@ func (ec *executionContext) fieldContext_Mutation_sendConfirmationCode(ctx conte
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
-			case "errorCode":
-				return ec.fieldContext_ErrorPayload_errorCode(ctx, field)
-			case "message":
-				return ec.fieldContext_ErrorPayload_message(ctx, field)
+			case "ok":
+				return ec.fieldContext_VoidPayload_ok(ctx, field)
 			}
-			return nil, fmt.Errorf("no field named %q was found under type ErrorPayload", field.Name)
+			return nil, fmt.Errorf("no field named %q was found under type VoidPayload", field.Name)
 		},
 	}
 	defer func() {
@@ -207,9 +205,9 @@ func (ec *executionContext) _Mutation_verifyConfirmationCode(ctx context.Context
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*ErrorPayload)
+	res := resTmp.(*VoidPayload)
 	fc.Result = res
-	return ec.marshalNErrorPayload2ᚖgithubᚗcomᚋezexᚑioᚋezexᚑgatewayᚋapiᚋgraphqlᚋgenᚐErrorPayload(ctx, field.Selections, res)
+	return ec.marshalNVoidPayload2ᚖgithubᚗcomᚋezexᚑioᚋezexᚑgatewayᚋapiᚋgraphqlᚋgenᚐVoidPayload(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_verifyConfirmationCode(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -220,12 +218,10 @@ func (ec *executionContext) fieldContext_Mutation_verifyConfirmationCode(ctx con
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
-			case "errorCode":
-				return ec.fieldContext_ErrorPayload_errorCode(ctx, field)
-			case "message":
-				return ec.fieldContext_ErrorPayload_message(ctx, field)
+			case "ok":
+				return ec.fieldContext_VoidPayload_ok(ctx, field)
 			}
-			return nil, fmt.Errorf("no field named %q was found under type ErrorPayload", field.Name)
+			return nil, fmt.Errorf("no field named %q was found under type VoidPayload", field.Name)
 		},
 	}
 	defer func() {

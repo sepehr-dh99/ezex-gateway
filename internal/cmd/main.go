@@ -3,14 +3,17 @@ package main
 import (
 	"context"
 	"flag"
+	"github.com/ezex-io/ezex-gateway/internal/adapter/redis"
+	"github.com/ezex-io/ezex-gateway/internal/interactor/auth"
 	"log/slog"
 	"os"
 	"os/signal"
 	"syscall"
 
 	"github.com/ezex-io/ezex-gateway/api/graphql"
-	"github.com/ezex-io/ezex-gateway/config"
-	"github.com/ezex-io/ezex-gateway/internal/auth"
+	"github.com/ezex-io/ezex-gateway/api/graphql/resolver"
+	"github.com/ezex-io/ezex-gateway/internal/adapter/grpc/notification"
+	"github.com/ezex-io/ezex-gateway/internal/config"
 	mdl "github.com/ezex-io/gopkg/middleware/http-mdl"
 )
 
@@ -33,9 +36,23 @@ func main() {
 
 	slog.SetLogLoggerLevel(defaultLogLevel)
 
-	a := auth.New()
+	redisPort, err := redis.New(cfg.RedisAdapterConfig)
+	if err != nil {
+		logging.Error(err.Error())
+		os.Exit(1)
+	}
 
-	gql := graphql.New(cfg.GraphqlServer, logging, a, mdl.Recover())
+	notificationPort, err := notification.New(cfg.NotificationAdapterConfig)
+	if err != nil {
+		logging.Error(err.Error())
+		os.Exit(1)
+	}
+
+	authInteractor := auth.NewAuth(cfg.AuthInteractorConfig, logging, notificationPort, redisPort)
+
+	resolve := resolver.NewResolver(authInteractor)
+
+	gql := graphql.New(cfg.GraphqlConfig, resolve, logging, mdl.Recover())
 
 	gql.Start()
 	logging.Info("graphql server started")

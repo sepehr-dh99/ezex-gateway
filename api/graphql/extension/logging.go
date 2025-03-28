@@ -8,17 +8,25 @@ import (
 	"github.com/99designs/gqlgen/graphql"
 )
 
-type LoggingExtension struct{}
+type LoggingExtension struct {
+	logging *slog.Logger
+}
 
-func (LoggingExtension) ExtensionName() string {
+func LoggingExt(logging *slog.Logger) *LoggingExtension {
+	return &LoggingExtension{logging}
+}
+
+func (*LoggingExtension) ExtensionName() string {
 	return "LoggingExtension"
 }
 
-func (LoggingExtension) Validate(_ graphql.ExecutableSchema) error {
+func (*LoggingExtension) Validate(_ graphql.ExecutableSchema) error {
 	return nil
 }
 
-func (LoggingExtension) InterceptOperation(ctx context.Context, next graphql.OperationHandler) graphql.ResponseHandler {
+func (l *LoggingExtension) InterceptOperation(ctx context.Context,
+	next graphql.OperationHandler,
+) graphql.ResponseHandler {
 	start := time.Now()
 	opCtx := graphql.GetOperationContext(ctx)
 
@@ -28,7 +36,7 @@ func (LoggingExtension) InterceptOperation(ctx context.Context, next graphql.Ope
 		resp := respHandler(ctx)
 		duration := time.Since(start)
 
-		slog.Info("[GraphQL] new operation called",
+		l.logging.Info("[GraphQL] new operation called",
 			"operation", opCtx.Operation.Operation,
 			"operation", opCtx.OperationName,
 			"name", duration,

@@ -18,6 +18,34 @@ import (
 
 // region    ***************************** args.gotpl *****************************
 
+func (ec *executionContext) dir_requirePermission_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := ec.dir_requirePermission_argsPermission(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["permission"] = arg0
+	return args, nil
+}
+func (ec *executionContext) dir_requirePermission_argsPermission(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (string, error) {
+	if _, ok := rawArgs["permission"]; !ok {
+		var zeroVal string
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("permission"))
+	if tmp, ok := rawArgs["permission"]; ok {
+		return ec.unmarshalNString2string(ctx, tmp)
+	}
+
+	var zeroVal string
+	return zeroVal, nil
+}
+
 // endregion ***************************** args.gotpl *****************************
 
 // region    ************************** directives.gotpl **************************
@@ -26,8 +54,8 @@ import (
 
 // region    **************************** field.gotpl *****************************
 
-func (ec *executionContext) _ErrorPayload_errorCode(ctx context.Context, field graphql.CollectedField, obj *ErrorPayload) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_ErrorPayload_errorCode(ctx, field)
+func (ec *executionContext) _VoidPayload_ok(ctx context.Context, field graphql.CollectedField, obj *VoidPayload) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_VoidPayload_ok(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -40,51 +68,7 @@ func (ec *executionContext) _ErrorPayload_errorCode(ctx context.Context, field g
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.ErrorCode, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(int32)
-	fc.Result = res
-	return ec.marshalNInt2int32(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_ErrorPayload_errorCode(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "ErrorPayload",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _ErrorPayload_message(ctx context.Context, field graphql.CollectedField, obj *ErrorPayload) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_ErrorPayload_message(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Message, nil
+		return obj.Ok, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -93,19 +77,19 @@ func (ec *executionContext) _ErrorPayload_message(ctx context.Context, field gra
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(*bool)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_ErrorPayload_message(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_VoidPayload_ok(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
-		Object:     "ErrorPayload",
+		Object:     "VoidPayload",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
+			return nil, errors.New("field of type Boolean does not have child fields")
 		},
 	}
 	return fc, nil
@@ -123,24 +107,19 @@ func (ec *executionContext) fieldContext_ErrorPayload_message(_ context.Context,
 
 // region    **************************** object.gotpl ****************************
 
-var errorPayloadImplementors = []string{"ErrorPayload"}
+var voidPayloadImplementors = []string{"VoidPayload"}
 
-func (ec *executionContext) _ErrorPayload(ctx context.Context, sel ast.SelectionSet, obj *ErrorPayload) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, errorPayloadImplementors)
+func (ec *executionContext) _VoidPayload(ctx context.Context, sel ast.SelectionSet, obj *VoidPayload) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, voidPayloadImplementors)
 
 	out := graphql.NewFieldSet(fields)
 	deferred := make(map[string]*graphql.FieldSet)
 	for i, field := range fields {
 		switch field.Name {
 		case "__typename":
-			out.Values[i] = graphql.MarshalString("ErrorPayload")
-		case "errorCode":
-			out.Values[i] = ec._ErrorPayload_errorCode(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
-		case "message":
-			out.Values[i] = ec._ErrorPayload_message(ctx, field, obj)
+			out.Values[i] = graphql.MarshalString("VoidPayload")
+		case "ok":
+			out.Values[i] = ec._VoidPayload_ok(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -168,18 +147,18 @@ func (ec *executionContext) _ErrorPayload(ctx context.Context, sel ast.Selection
 
 // region    ***************************** type.gotpl *****************************
 
-func (ec *executionContext) marshalNErrorPayload2githubᚗcomᚋezexᚑioᚋezexᚑgatewayᚋapiᚋgraphqlᚋgenᚐErrorPayload(ctx context.Context, sel ast.SelectionSet, v ErrorPayload) graphql.Marshaler {
-	return ec._ErrorPayload(ctx, sel, &v)
+func (ec *executionContext) marshalNVoidPayload2githubᚗcomᚋezexᚑioᚋezexᚑgatewayᚋapiᚋgraphqlᚋgenᚐVoidPayload(ctx context.Context, sel ast.SelectionSet, v VoidPayload) graphql.Marshaler {
+	return ec._VoidPayload(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNErrorPayload2ᚖgithubᚗcomᚋezexᚑioᚋezexᚑgatewayᚋapiᚋgraphqlᚋgenᚐErrorPayload(ctx context.Context, sel ast.SelectionSet, v *ErrorPayload) graphql.Marshaler {
+func (ec *executionContext) marshalNVoidPayload2ᚖgithubᚗcomᚋezexᚑioᚋezexᚑgatewayᚋapiᚋgraphqlᚋgenᚐVoidPayload(ctx context.Context, sel ast.SelectionSet, v *VoidPayload) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
 		}
 		return graphql.Null
 	}
-	return ec._ErrorPayload(ctx, sel, v)
+	return ec._VoidPayload(ctx, sel, v)
 }
 
 // endregion ***************************** type.gotpl *****************************

@@ -37,14 +37,10 @@ type ResolverRoot interface {
 }
 
 type DirectiveRoot struct {
+	RequirePermission func(ctx context.Context, obj any, next graphql.Resolver, permission string) (res any, err error)
 }
 
 type ComplexityRoot struct {
-	ErrorPayload struct {
-		ErrorCode func(childComplexity int) int
-		Message   func(childComplexity int) int
-	}
-
 	Mutation struct {
 		SendConfirmationCode   func(childComplexity int, input SendConfirmationCodeInput) int
 		VerifyConfirmationCode func(childComplexity int, input VerifyConfirmationCodeInput) int
@@ -52,6 +48,10 @@ type ComplexityRoot struct {
 
 	Query struct {
 		Dummy func(childComplexity int) int
+	}
+
+	VoidPayload struct {
+		Ok func(childComplexity int) int
 	}
 }
 
@@ -73,20 +73,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 	ec := executionContext{nil, e, 0, 0, nil}
 	_ = ec
 	switch typeName + "." + field {
-
-	case "ErrorPayload.errorCode":
-		if e.complexity.ErrorPayload.ErrorCode == nil {
-			break
-		}
-
-		return e.complexity.ErrorPayload.ErrorCode(childComplexity), true
-
-	case "ErrorPayload.message":
-		if e.complexity.ErrorPayload.Message == nil {
-			break
-		}
-
-		return e.complexity.ErrorPayload.Message(childComplexity), true
 
 	case "Mutation.sendConfirmationCode":
 		if e.complexity.Mutation.SendConfirmationCode == nil {
@@ -118,6 +104,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.Dummy(childComplexity), true
+
+	case "VoidPayload.ok":
+		if e.complexity.VoidPayload.Ok == nil {
+			break
+		}
+
+		return e.complexity.VoidPayload.Ok(childComplexity), true
 
 	}
 	return 0, false
@@ -227,12 +220,16 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 
 var sources = []*ast.Source{
 	{Name: "../schema/auth.graphql", Input: `# ─────────────────────────────
-# Input types
+# Enum
 # ─────────────────────────────
 
 enum DeliveryMethod {
   EMAIL
 }
+
+# ─────────────────────────────
+# Input types
+# ─────────────────────────────
 
 input SendConfirmationCodeInput {
   method: DeliveryMethod!
@@ -257,13 +254,22 @@ type Query {
 # ─────────────────────────────
 
 extend type Mutation {
-  sendConfirmationCode(input: SendConfirmationCodeInput!): ErrorPayload!
-  verifyConfirmationCode(input: VerifyConfirmationCodeInput!): ErrorPayload!
+  sendConfirmationCode(input: SendConfirmationCodeInput!): VoidPayload!
+  verifyConfirmationCode(input: VerifyConfirmationCodeInput!): VoidPayload!
 }
 `, BuiltIn: false},
-	{Name: "../schema/common.graphql", Input: `type ErrorPayload {
-  errorCode: Int!
-  message: String
+	{Name: "../schema/common.graphql", Input: `# ─────────────────────────────
+# Directive mutation and query options
+# ─────────────────────────────
+
+directive @requirePermission(permission: String!) on FIELD_DEFINITION
+
+# ─────────────────────────────
+# Common types
+# ─────────────────────────────
+
+type VoidPayload {
+  ok: Boolean
 }`, BuiltIn: false},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)

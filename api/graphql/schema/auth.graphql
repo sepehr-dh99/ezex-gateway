@@ -1,10 +1,14 @@
 # ─────────────────────────────
-# Input types
+# Enum
 # ─────────────────────────────
 
 enum DeliveryMethod {
   EMAIL
 }
+
+# ─────────────────────────────
+# Input types
+# ─────────────────────────────
 
 input SendConfirmationCodeInput {
   method: DeliveryMethod!
@@ -29,6 +33,6 @@ type Query {
 # ─────────────────────────────
 
 extend type Mutation {
-  sendConfirmationCode(input: SendConfirmationCodeInput!): ErrorPayload!
-  verifyConfirmationCode(input: VerifyConfirmationCodeInput!): ErrorPayload!
+  sendConfirmationCode(input: SendConfirmationCodeInput!): VoidPayload!
+  verifyConfirmationCode(input: VerifyConfirmationCodeInput!): VoidPayload!
 }

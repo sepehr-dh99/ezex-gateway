@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log/slog"
 	"net/http"
 	"time"
 
@@ -15,8 +16,6 @@ import (
 	ext "github.com/ezex-io/ezex-gateway/api/graphql/extension"
 	"github.com/ezex-io/ezex-gateway/api/graphql/gen"
 	"github.com/ezex-io/ezex-gateway/api/graphql/resolver"
-	"github.com/ezex-io/ezex-gateway/config"
-	"github.com/ezex-io/ezex-gateway/internal/auth"
 	mdl "github.com/ezex-io/gopkg/middleware/http-mdl"
 	"github.com/vektah/gqlparser/v2/ast"
 )
@@ -26,11 +25,13 @@ type Server struct {
 	errCh chan error
 }
 
-func New(cfg *config.GraphServer, auth *auth.Auth, middlewares ...mdl.Middleware) *Server {
+func New(cfg *Config, resolver *resolver.Resolver, logging *slog.Logger,
+	middlewares ...mdl.Middleware,
+) *Server {
 	mux := http.NewServeMux()
 
 	graphSrv := handler.New(gen.NewExecutableSchema(gen.Config{
-		Resolvers: resolver.NewResolver(auth),
+		Resolvers: resolver,
 	}))
 
 	graphSrv.AddTransport(transport.Options{})
@@ -38,13 +39,14 @@ func New(cfg *config.GraphServer, auth *auth.Auth, middlewares ...mdl.Middleware
 	graphSrv.AddTransport(transport.POST{})
 
 	graphSrv.SetQueryCache(lru.New[*ast.QueryDocument](1000))
+	graphSrv.SetErrorPresenter(ext.FormatGQLError)
 
 	graphSrv.Use(extension.Introspection{})
 	graphSrv.Use(extension.AutomaticPersistedQuery{
 		Cache: lru.New[string](100),
 	})
 
-	graphSrv.Use(ext.LoggingExtension{})
+	graphSrv.Use(ext.LoggingExt(logging))
 
 	if cfg.Playground {
 		mux.Handle("/", playground.Handler("ezeX playground", "/query"))
@@ -52,7 +54,7 @@ func New(cfg *config.GraphServer, auth *auth.Auth, middlewares ...mdl.Middleware
 
 	queryPath := "/query"
 
-	if cfg.QueryPath == "" {
+	if cfg.QueryPath != "" {
 		queryPath = cfg.QueryPath
 	}
 

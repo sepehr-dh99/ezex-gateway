@@ -6,16 +6,24 @@ import (
 	"github.com/ezex-io/ezex-gateway/api/graphql/gen"
 )
 
-func (*mutationResolver) SendConfirmationCode(_ context.Context,
-	_ gen.SendConfirmationCodeInput,
-) (*gen.ErrorPayload, error) {
-	// TODO implement me
-	panic("implement me")
+func (m *mutationResolver) SendConfirmationCode(ctx context.Context,
+	in gen.SendConfirmationCodeInput,
+) (*gen.VoidPayload, error) {
+	err := m.auth.SendConfirmationCode(ctx, in.Recipient, in.Method)
+	if err != nil {
+		return nil, err
+	}
+
+	return &gen.VoidPayload{}, nil
 }
 
-func (*mutationResolver) VerifyConfirmationCode(_ context.Context,
-	_ gen.VerifyConfirmationCodeInput,
-) (*gen.ErrorPayload, error) {
-	// TODO implement me
-	panic("implement me")
+func (m *mutationResolver) VerifyConfirmationCode(ctx context.Context,
+	in gen.VerifyConfirmationCodeInput,
+) (*gen.VoidPayload, error) {
+	err := m.auth.VerifyConfirmationCode(ctx, in.Recipient, in.Code)
+	if err != nil {
+		return nil, err
+	}
+
+	return &gen.VoidPayload{}, nil
 }

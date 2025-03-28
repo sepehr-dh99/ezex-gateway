@@ -10,12 +10,12 @@ import (
 )
 
 // SendConfirmationCode is the resolver for the sendConfirmationCode field.
-func (r *mutationResolver) SendConfirmationCode(ctx context.Context, input SendConfirmationCodeInput) (*ErrorPayload, error) {
+func (r *mutationResolver) SendConfirmationCode(ctx context.Context, input SendConfirmationCodeInput) (*VoidPayload, error) {
 	panic(fmt.Errorf("not implemented: SendConfirmationCode - sendConfirmationCode"))
 }
 
 // VerifyConfirmationCode is the resolver for the verifyConfirmationCode field.
-func (r *mutationResolver) VerifyConfirmationCode(ctx context.Context, input VerifyConfirmationCodeInput) (*ErrorPayload, error) {
+func (r *mutationResolver) VerifyConfirmationCode(ctx context.Context, input VerifyConfirmationCodeInput) (*VoidPayload, error) {
 	panic(fmt.Errorf("not implemented: VerifyConfirmationCode - verifyConfirmationCode"))
 }
 
@@ -30,7 +30,5 @@ func (r *Resolver) Mutation() MutationResolver { return &mutationResolver{r} }
 // Query returns QueryResolver implementation.
 func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
 
-type (
-	mutationResolver struct{ *Resolver }
-	queryResolver    struct{ *Resolver }
-)
+type mutationResolver struct{ *Resolver }
+type queryResolver struct{ *Resolver }
