@@ -1,0 +1,38 @@
+# ─────────────────────────────
+# Enum
+# ─────────────────────────────
+
+enum DeliveryMethod {
+  EMAIL
+}
+
+# ─────────────────────────────
+# Input types
+# ─────────────────────────────
+
+input SendConfirmationCodeInput {
+  method: DeliveryMethod!
+  recipient: String!
+}
+
+input VerifyConfirmationCodeInput {
+  recipient: String!
+  code: String!
+}
+
+# ─────────────────────────────
+# Query
+# ─────────────────────────────
+
+type Query {
+  _dummy: String
+}
+
+# ─────────────────────────────
+# Mutation fields
+# ─────────────────────────────
+
+extend type Mutation {
+  sendConfirmationCode(input: SendConfirmationCodeInput!): VoidPayload!
+  verifyConfirmationCode(input: VerifyConfirmationCodeInput!): VoidPayload!
+}

@@ -1,0 +1,13 @@
+# ─────────────────────────────
+# Directive mutation and query options
+# ─────────────────────────────
+
+directive @requirePermission(permission: String!) on FIELD_DEFINITION
+
+# ─────────────────────────────
+# Common types
+# ─────────────────────────────
+
+type VoidPayload {
+  ok: Boolean
+}
