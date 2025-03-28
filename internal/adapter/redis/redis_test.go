@@ -1,3 +1,6 @@
+//go:build integration
+// +build integration
+
 package redis
 
 import (
@@ -40,6 +43,7 @@ func setupRedis(t *testing.T) *Adapter {
 
 	r, err := New(cfg)
 	assert.NoError(t, err)
+
 	return r.(*Adapter)
 }
 
@@ -48,6 +52,7 @@ func mustAtoi(s string) int {
 	if err != nil {
 		panic(err)
 	}
+
 	return i
 }
 
