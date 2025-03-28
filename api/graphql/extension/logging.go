@@ -2,17 +2,17 @@ package extensions
 
 import (
 	"context"
-	"log/slog"
 	"time"
 
 	"github.com/99designs/gqlgen/graphql"
+	"github.com/ezex-io/gopkg/logger"
 )
 
 type LoggingExtension struct {
-	logging *slog.Logger
+	logging logger.Logger
 }
 
-func LoggingExt(logging *slog.Logger) *LoggingExtension {
+func LoggingExt(logging logger.Logger) *LoggingExtension {
 	return &LoggingExtension{logging}
 }
 
@@ -36,7 +36,7 @@ func (l *LoggingExtension) InterceptOperation(ctx context.Context,
 		resp := respHandler(ctx)
 		duration := time.Since(start)
 
-		l.logging.Info("[GraphQL] new operation called",
+		l.logging.Debug("[GraphQL] new operation called",
 			"operation", opCtx.Operation.Operation,
 			"operation", opCtx.OperationName,
 			"name", duration,
