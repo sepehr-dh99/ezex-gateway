@@ -5,6 +5,12 @@ package integration
 
 import (
 	"context"
+	"log/slog"
+	"os"
+	"strconv"
+	"testing"
+	"time"
+
 	"github.com/ezex-io/ezex-gateway/api/graphql/gen"
 	"github.com/ezex-io/ezex-gateway/internal/adapter/grpc/notification"
 	"github.com/ezex-io/ezex-gateway/internal/adapter/redis"
@@ -12,11 +18,6 @@ import (
 	"github.com/ezex-io/ezex-gateway/internal/port"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"log/slog"
-	"os"
-	"strconv"
-	"testing"
-	"time"
 )
 
 type authData struct {
