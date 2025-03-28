@@ -5,11 +5,12 @@ package integration
 
 import (
 	"context"
-	"log/slog"
 	"os"
 	"strconv"
 	"testing"
 	"time"
+
+	"github.com/ezex-io/gopkg/logger"
 
 	"github.com/ezex-io/ezex-gateway/api/graphql/gen"
 	"github.com/ezex-io/ezex-gateway/internal/adapter/grpc/notification"
@@ -80,7 +81,7 @@ func setupAuth(t *testing.T) *authData {
 	redisPort, err := redis.New(redisCfg)
 	require.NoError(t, err)
 
-	a := auth.NewAuth(auth.DefaultConfig, slog.Default(), notificationPort, redisPort)
+	a := auth.NewAuth(auth.DefaultConfig, logger.DefaultSlog, notificationPort, redisPort)
 	require.NotNil(t, a)
 
 	return &authData{

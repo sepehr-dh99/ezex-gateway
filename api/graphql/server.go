@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"log/slog"
 	"net/http"
 	"time"
 
@@ -16,6 +15,7 @@ import (
 	ext "github.com/ezex-io/ezex-gateway/api/graphql/extension"
 	"github.com/ezex-io/ezex-gateway/api/graphql/gen"
 	"github.com/ezex-io/ezex-gateway/api/graphql/resolver"
+	"github.com/ezex-io/gopkg/logger"
 	mdl "github.com/ezex-io/gopkg/middleware/http-mdl"
 	"github.com/vektah/gqlparser/v2/ast"
 )
@@ -25,7 +25,7 @@ type Server struct {
 	errCh chan error
 }
 
-func New(cfg *Config, resolver *resolver.Resolver, logging *slog.Logger,
+func New(cfg *Config, resolver *resolver.Resolver, logging logger.Logger,
 	middlewares ...mdl.Middleware,
 ) *Server {
 	mux := http.NewServeMux()

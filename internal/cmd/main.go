@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"flag"
+	"fmt"
 	"log/slog"
 	"os"
 	"os/signal"
@@ -14,6 +15,7 @@ import (
 	"github.com/ezex-io/ezex-gateway/internal/adapter/redis"
 	"github.com/ezex-io/ezex-gateway/internal/config"
 	"github.com/ezex-io/ezex-gateway/internal/interactor/auth"
+	"github.com/ezex-io/gopkg/logger"
 	mdl "github.com/ezex-io/gopkg/middleware/http-mdl"
 )
 
@@ -21,32 +23,32 @@ func main() {
 	configPath := flag.String("config", "./config.yml", "path to config file")
 	flag.Parse()
 
-	logging := slog.Default()
+	logging := logger.NewSlog(nil)
 
 	cfg, err := config.LoadConfig(*configPath)
 	if err != nil {
-		logging.Error(err.Error())
-		os.Exit(1)
+		logging.Fatal(err.Error())
 	}
+	logging.Info("successfully loaded config")
 
-	defaultLogLevel := slog.LevelInfo
 	if cfg.Debug {
-		defaultLogLevel = slog.LevelDebug
+		logging = logger.NewSlog(logger.WithTextHandler(os.Stdout, slog.LevelDebug))
 	}
-
-	slog.SetLogLoggerLevel(defaultLogLevel)
 
 	redisPort, err := redis.New(cfg.RedisAdapterConfig)
 	if err != nil {
 		logging.Error(err.Error())
 		os.Exit(1)
 	}
+	logging.Info("initialized redis adapter")
 
 	notificationPort, err := notification.New(cfg.NotificationAdapterConfig)
 	if err != nil {
 		logging.Error(err.Error())
 		os.Exit(1)
 	}
+
+	logging.Info("initialized notification service adapter")
 
 	authInteractor := auth.NewAuth(cfg.AuthInteractorConfig, logging, notificationPort, redisPort)
 
@@ -55,16 +57,28 @@ func main() {
 	gql := graphql.New(cfg.GraphqlConfig, resolve, logging, mdl.Recover())
 
 	gql.Start()
-	logging.Info("graphql server started")
+	logging.Info("graphql server started", "addr",
+		fmt.Sprintf("%s:%d", cfg.GraphqlConfig.Address, cfg.GraphqlConfig.Port))
 
 	interrupt := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM)
 
 	select {
 	case <-interrupt:
-		_ = gql.Stop(context.Background())
-		_ = redisPort.Close()
-		_ = notificationPort.Close()
+		err = gql.Stop(context.Background())
+		if err != nil {
+			logging.Fatal(err.Error())
+		}
+
+		err = redisPort.Close()
+		if err != nil {
+			logging.Fatal(err.Error())
+		}
+
+		err = notificationPort.Close()
+		if err != nil {
+			logging.Fatal(err.Error())
+		}
 
 		logging.Warn("service interrupted")
 	case err := <-gql.Notify():
