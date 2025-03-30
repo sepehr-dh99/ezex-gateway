@@ -2,19 +2,31 @@ BINARY_NAME = ezex-gateway
 BUILD_DIR = build
 CMD_DIR = internal/cmd/main.go
 
-.PHONY: all fmt lint vet test unit_test race_test build_linux check clean gen-graphql
+
+########################################
+### Targets needed for development
 
 gen-graphql:
 	@echo "Generating graphql code..."
 	@go tool gqlgen generate ./...
 
-fmt:
-	@echo "Formatting code..."
-	@go tool gofumpt -l -w .
+########################################
+### Building
 
-lint:
-	@echo "Running lint..."
-	@go tool golangci-lint  run ./... --timeout=20m0s
+build:
+	@mkdir -p $(BUILD_DIR)
+	@go build -o $(BUILD_DIR)/$(BINARY_NAME) $(CMD_DIR)
+
+release:
+	@mkdir -p $(BUILD_DIR)
+	@go build -ldflags "-s -w" -trimpath -o $(BUILD_DIR)/$(BINARY_NAME) $(CMD_DIR)
+
+clean:
+	@echo "Cleaning up build artifacts..."
+	@rm -rf $(BUILD_DIR)
+
+########################################
+### Testing
 
 unit_test:
 	@echo "Running unit tests..."
@@ -28,15 +40,22 @@ integration_test:
 	@echo "Running integration tests..."
 	@go test -tags=integration ./... -v
 
-build_linux:
-	@echo "Building for Linux..."
-	@mkdir -p $(BUILD_DIR)
-	@GOOS=linux GOARCH=amd64 go build -o $(BUILD_DIR)/$(BINARY_NAME) $(CMD_DIR)
-
 test: unit_test race_test
+
+########################################
+### Formatting the code
+
+fmt:
+	@echo "Formatting code..."
+	@go tool gofumpt -l -w .
+
+lint:
+	@echo "Running lint..."
+	@go tool golangci-lint  run ./... --timeout=20m0s
 
 check: fmt lint
 
-clean:
-	@echo "Cleaning up build artifacts..."
-	@rm -rf $(BUILD_DIR)
+.PHONY: all gen-graphql
+.PHONY: build release clean
+.PHONY: test unit_test race_test integration_test
+.PHONY: fmt lint check
