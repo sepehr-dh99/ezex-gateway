@@ -55,7 +55,7 @@ lint:
 
 check: fmt lint
 
-.PHONY: all gen-graphql
+.PHONY: gen-graphql
 .PHONY: build release clean
 .PHONY: test unit_test race_test integration_test
 .PHONY: fmt lint check
