@@ -2,13 +2,15 @@ BINARY_NAME = ezex-gateway
 BUILD_DIR = build
 CMD_DIR = internal/cmd/main.go
 
-
 ########################################
 ### Targets needed for development
 
 gen-graphql:
 	@echo "Generating graphql code..."
 	@go tool gqlgen generate ./...
+
+docker:
+	docker build --tag ezex-gateway .
 
 ########################################
 ### Building
@@ -55,7 +57,7 @@ lint:
 
 check: fmt lint
 
-.PHONY: gen-graphql
+.PHONY: gen-graphql docker
 .PHONY: build release clean
 .PHONY: test unit_test race_test integration_test
 .PHONY: fmt lint check
