@@ -19,6 +19,16 @@ func (r *mutationResolver) VerifyConfirmationCode(ctx context.Context, input Ver
 	panic(fmt.Errorf("not implemented: VerifyConfirmationCode - verifyConfirmationCode"))
 }
 
+// SecurityImage is the resolver for the securityImage field.
+func (r *mutationResolver) SecurityImage(ctx context.Context, input SecurityImageInput) (*SecurityImagePayload, error) {
+	panic(fmt.Errorf("not implemented: SecurityImage - securityImage"))
+}
+
+// ProcessFirebaseAuth is the resolver for the processFirebaseAuth field.
+func (r *mutationResolver) ProcessFirebaseAuth(ctx context.Context, input ProcessFirebaseAuthInput) (*VoidPayload, error) {
+	panic(fmt.Errorf("not implemented: ProcessFirebaseAuth - processFirebaseAuth"))
+}
+
 // Dummy is the resolver for the _dummy field.
 func (r *queryResolver) Dummy(ctx context.Context) (*string, error) {
 	panic(fmt.Errorf("not implemented: Dummy - _dummy"))
