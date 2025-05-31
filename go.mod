@@ -17,7 +17,7 @@ require (
 	github.com/ezex-io/gopkg/logger v0.0.0-20250516110026-cbaeced8e963
 	github.com/ezex-io/gopkg/middleware/http-mdl v0.0.0-20250516110026-cbaeced8e963
 	github.com/ezex-io/gopkg/testsuite v0.0.0-20250516110026-cbaeced8e963
-	github.com/ezex-io/gopkg/utils v0.0.0-20250516110026-cbaeced8e963
+	github.com/ezex-io/gopkg/utils v0.0.0-20250530054634-7f6591d6ccc2
 	github.com/redis/go-redis/v9 v9.8.0
 	github.com/stretchr/testify v1.10.0
 	github.com/vektah/gqlparser/v2 v2.5.27

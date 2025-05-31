@@ -7,10 +7,10 @@ import (
 
 	"github.com/ezex-io/ezex-gateway/internal/adapter/graphql/gateway"
 	"github.com/ezex-io/ezex-gateway/internal/port"
-	"github.com/ezex-io/ezex-gateway/internal/utils"
 	"github.com/ezex-io/ezex-proto/go/notification"
 	"github.com/ezex-io/ezex-proto/go/users"
 	"github.com/ezex-io/gopkg/logger"
+	"github.com/ezex-io/gopkg/utils"
 )
 
 type Auth struct {
@@ -46,7 +46,10 @@ func (a *Auth) SendConfirmationCode(ctx context.Context, inp *gateway.SendConfir
 		return nil, ErrConfirmationCodeAlreadySent
 	}
 
-	code := utils.GenerateRandomCode(6)
+	code, err := utils.GenerateRandomCode(6, utils.Digits)
+	if err != nil {
+		return nil, err
+	}
 
 	switch inp.Method {
 	case gateway.DeliveryMethodEmail:
